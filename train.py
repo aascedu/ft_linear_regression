@@ -27,7 +27,7 @@ class Model():
                 exit()
         self.m = len(km)
         self.iterations = args.i
-        self.learning_rate = args.learning
+        self.learning_rate = args.rate
         self.km_min = min(km)
         self.km_max = max(km)
         for x in km:
@@ -41,13 +41,23 @@ class Model():
             for i in range(self.m):
                 print(self.normalized_km[i], self.price[i])
 
+def validate_float_input(value):
+    value = float(value)
+    if value < 0:
+        raise argparse.ArgumentTypeError("must be >= 0")
+    return value
 
+def validate_int_input(value):
+    value = int(value)
+    if value < 0:
+        raise argparse.ArgumentTypeError("must be >= 0")
+    return value
 
 def parser():
     parser = argparse.ArgumentParser(description="Train your linear regression model")
     parser.add_argument("--data", required=True, type=argparse.FileType("r"), help="Path to the CSV file")
-    parser.add_argument("-i", default=1000, type=int, help="Number of iterations during training (default 1000)")
-    parser.add_argument("-l", "--learning", default=0.01, type=float, help="Learning rate used by the gradient descent (default 0.01)")
+    parser.add_argument("-i", default=1000, type=validate_int_input, help="Number of iterations during training (default 1000)")
+    parser.add_argument("-r", "--rate", default=0.01, type=validate_float_input, help="Learning rate used by the gradient descent (default 0.01)")
     args = parser.parse_args()
     return args
 
