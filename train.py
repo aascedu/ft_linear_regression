@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+import json
 
 class Model():
     normalized_km: list[float]
@@ -34,12 +35,29 @@ class Model():
             self.normalized_km.append((x - self.km_min) / (self.km_max - self.km_min))
 
     def train(self) -> None:
-
         for _ in range(self.iterations):
             tmp_theta0 = 0.0
             tmp_theta1 = 0.0
             for i in range(self.m):
-                print(self.normalized_km[i], self.price[i])
+                # print(self.normalized_km[i], self.price[i])
+                estimate_price = self.theta0 + (self.theta1 * self.normalized_km[i])
+                error = estimate_price - self.price[i]
+                tmp_theta0 += error
+                tmp_theta1 += error * self.normalized_km[i]
+            tmp_theta0 = self.learning_rate * (1 / self.m) * tmp_theta0
+            tmp_theta1 = self.learning_rate * (1 / self.m) * tmp_theta1
+            self.theta0 -= tmp_theta0
+            self.theta1 -= tmp_theta1
+
+    def save(self):
+        data = {
+                    "theta0": self.theta0,
+                    "theta1": self.theta1,
+                    "km_min": self.km_min,
+                    "km_max": self.km_max
+                }
+        with open("model.json", "w") as file:
+            json.dump(data, file, indent=4)
 
 def validate_float_input(value):
     value = float(value)
@@ -65,6 +83,7 @@ def main():
     args = parser()
     model = Model(args)
     model.train()
+    model.save()
 
 if __name__ == "__main__":
     main()
