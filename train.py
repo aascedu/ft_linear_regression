@@ -51,11 +51,11 @@ class Model():
 
     def save(self):
         data = {
-                    "theta0": self.theta0,
-                    "theta1": self.theta1,
-                    "km_min": self.km_min,
-                    "km_max": self.km_max
-                }
+            "theta0": self.theta0,
+            "theta1": self.theta1,
+            "km_min": self.km_min,
+            "km_max": self.km_max
+        }
         with open("model.json", "w") as file:
             json.dump(data, file, indent=4)
 
