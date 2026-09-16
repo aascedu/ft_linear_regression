@@ -2,6 +2,7 @@
 import argparse
 import csv
 import json
+import matplotlib
 
 class Model():
     normalized_km: list[float]
@@ -59,6 +60,9 @@ class Model():
         with open("model.json", "w") as file:
             json.dump(data, file, indent=4)
 
+    def plot(self):
+        print("plot coming...")
+
 def validate_float_input(value):
     value = float(value)
     if value < 0:
@@ -76,6 +80,7 @@ def parser():
     parser.add_argument("--data", required=True, type=argparse.FileType("r"), help="Path to the CSV file")
     parser.add_argument("-i", default=1000, type=validate_int_input, help="Number of iterations during training (default 1000)")
     parser.add_argument("-r", "--rate", default=0.01, type=validate_float_input, help="Learning rate used by the gradient descent (default 0.01)")
+    parser.add_argument("--plot", action="store_true", help="Show the data plotted and the line from the linear regression.")
     args = parser.parse_args()
     return args
 
@@ -84,6 +89,8 @@ def main():
     model = Model(args)
     model.train()
     model.save()
+    if args.plot == True:
+        model.plot()
 
 if __name__ == "__main__":
     main()
